@@ -1,0 +1,28 @@
+body {
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+.active {
+    fill: blue !important;
+}
+#logo {
+    width: 300px;
+    height: 150px;
+    position: absolute;
+    z-index: 999;
+    top: 10px;
+    left: 10px;
+}
+#logo img {
+    width: 100%;
+    height: auto;
+}
+/*
+#main {
+    position: relative;
+}
+svg.datamap {
+    top: -20px;
+    left: 0;
+}*/
