@@ -3,8 +3,7 @@
         element: document.getElementById('map'),
         responsive: true,
         fills: {
-            defaultFill: '#78a7b9',
-            bubble: '#0f3b47'
+            defaultFill: '#78a7b9'
         },
         geographyConfig: {
             highlightFillColor: '#0f3b47',
@@ -25,7 +24,7 @@
             if (data && data !== 'undefined') {
                 var offenses = data.response.result.rows;
 
-                var bubbles = [];
+                var pins = [];
                 for(var i = 0; i < offenses.length; i ++) {
                     var offense = offenses[i];
                     if (offense.length > 0) {
@@ -33,19 +32,18 @@
                         var coordinates = offense[1];
                         if (coordinates.length > 0) {
                             coordinates = coordinates.split(',');
-                            var bubble = {
+                            var pin = {
                                 latitude: coordinates[0],
                                 longitude: coordinates[1],
                                 radius: 5,
                                 borderWidth: 0,
-                                fillKey: 'bubble',
                                 title: title
                             }
-                            bubbles.push(bubble);
+                            pins.push(pin);
                         }
                     }
                 }
-                map.bubbles(bubbles, {
+                map.pins(pins, {
                     popupTemplate: function (geo, data) {
                         return data.title;
                     }

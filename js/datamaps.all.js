@@ -55,7 +55,8 @@
             strokeWidth: 1,
             arcSharpness: 1,
             animationSpeed: 600
-        }
+        },
+        pinsConfig: {}
     };
 
     /*
@@ -544,6 +545,133 @@
 
     }
 
+    function handlePins(layer, data, options) {
+        var self = this,
+            options = this.options,
+            svg = this.svg;
+
+        if (!data || (data && !data.slice)) {
+            throw "Datamaps Error - pins must be an array";
+        }
+
+        var pins = layer.selectAll('svg.pin').data(data, JSON.stringify);
+
+        pins
+            .enter()
+            .append('svg:image')
+            .attr('class', 'pin')
+            .attr('width', 20)
+            .attr('height', 30)
+            .attr('xlink:href', 'images/pin.png')
+            .attr('transform', function(datum) {
+                var latLng;
+                if (datumHasCoords(datum)) {
+                    latLng = self.latLngToXY(datum.latitude, datum.longitude);
+                }
+                else if (datum.centered) {
+                    latLng = self.path.centroid(svg.select('path.' + datum.centered).data()[0]);
+                }
+                if (latLng) {
+                    return 'translate(' + (latLng[0] - 10) + ', ' + (latLng[1] - 30) + ')';
+                }
+            })
+            /*.append('image')
+            .attr('width', '100%')
+            .attr('height', 'auto')*/
+
+            /*.attr('cx', function (datum) {
+                var latLng;
+                if (datumHasCoords(datum)) {
+                    latLng = self.latLngToXY(datum.latitude, datum.longitude);
+                }
+                else if (datum.centered) {
+                    latLng = self.path.centroid(svg.select('path.' + datum.centered).data()[0]);
+                }
+                if (latLng) return latLng[0];
+            })
+            .attr('cy', function (datum) {
+                var latLng;
+                if (datumHasCoords(datum)) {
+                    latLng = self.latLngToXY(datum.latitude, datum.longitude);
+                }
+                else if (datum.centered) {
+                    latLng = self.path.centroid(svg.select('path.' + datum.centered).data()[0]);
+                }
+                if (latLng) return latLng[1];
+                ;
+            })
+            .attr('r', 0) //for animation purposes
+            .attr('data-info', function (d) {
+                return JSON.stringify(d);
+            })
+            .style('stroke', function (datum) {
+                console.log(datum)
+                return val(datum.borderColor, options.borderColor, datum);
+            })
+            .style('stroke-width', function (datum) {
+                return val(datum.borderWidth, options.borderWidth, datum);
+            })
+            .style('fill-opacity', function (datum) {
+                return val(datum.fillOpacity, options.fillOpacity, datum);
+            })
+            .style('fill', function (datum) {
+                var fillColor = fillData[val(datum.fillKey, options.fillKey, datum)];
+                return fillColor || fillData.defaultFill;
+            })
+            .on('mouseover', function (datum) {
+                var $this = d3.select(this);
+
+                if (options.highlightOnHover) {
+                    //save all previous attributes for mouseout
+                    var previousAttributes = {
+                        'fill': $this.style('fill'),
+                        'stroke': $this.style('stroke'),
+                        'stroke-width': $this.style('stroke-width'),
+                        'fill-opacity': $this.style('fill-opacity')
+                    };
+
+                    $this
+                        .style('fill', val(datum.highlightFillColor, options.highlightFillColor, datum))
+                        .style('stroke', val(datum.highlightBorderColor, options.highlightBorderColor, datum))
+                        .style('stroke-width', val(datum.highlightBorderWidth, options.highlightBorderWidth, datum))
+                        .style('fill-opacity', val(datum.highlightFillOpacity, options.highlightFillOpacity, datum))
+                        .attr('data-previousAttributes', JSON.stringify(previousAttributes));
+                }
+
+                if (options.popupOnHover) {
+                    self.updatePopup($this, datum, options, svg);
+                }
+            })
+            .on('mouseout', function (datum) {
+                var $this = d3.select(this);
+
+                if (options.highlightOnHover) {
+                    //reapply previous attributes
+                    var previousAttributes = JSON.parse($this.attr('data-previousAttributes'));
+                    for (var attr in previousAttributes) {
+                        $this.style(attr, previousAttributes[attr]);
+                    }
+                }
+
+                d3.selectAll('.datamaps-hoverover').style('display', 'none');
+            })
+            .transition().duration(400)
+            .attr('r', function (datum) {
+                return val(datum.radius, options.radius, datum);
+            });*/
+
+        /*bubbles.exit()
+            .transition()
+            .delay(options.exitDelay)
+            .attr("r", 0)
+            .remove();*/
+
+        function datumHasCoords(datum) {
+            return typeof datum !== 'undefined' && typeof datum.latitude !== 'undefined' && typeof datum.longitude !== 'undefined';
+        }
+
+    }
+
     //stolen from underscore.js
     function defaults(obj) {
         Array.prototype.slice.call(arguments, 1).forEach(function (source) {
@@ -579,6 +707,7 @@
 
         /* Add core plugins to this instance */
         this.addPlugin('bubbles', handleBubbles);
+        this.addPlugin('pins', handlePins);
         this.addPlugin('legend', addLegend);
         this.addPlugin('arc', handleArcs);
         this.addPlugin('labels', handleLabels);
