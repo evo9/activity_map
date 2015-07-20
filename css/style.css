@@ -26,15 +26,16 @@ svg.datamap {
     top: -20px;
     left: 0;
 }*/
-svg {
-    position: relative;
+.pin:hover {
+    cursor: pointer;
 }
-svg.pin {
-    background-image: url(../images/pin.png);
-    -webkit-background-size: 100% 100%;
-    background-size: 100% 100%;
+.datamaps-hoverover {
+    background: #fff;
+    width: 200px;
+    padding: 10px;
+    border: 1px solid #78a7b9;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    box-shadow: 0 5px 10px #000;
 }
-/*svg.pin img {
-    width: 100%;
-    height: auto;
-}*/

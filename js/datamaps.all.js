@@ -56,7 +56,12 @@
             arcSharpness: 1,
             animationSpeed: 600
         },
-        pinsConfig: {}
+        pinsConfig: {
+            popupOnHover: true,
+            popupTemplate: function (geography, data) {
+                return '<div class="hoverinfo"><strong>' + data.name + '</strong></div>';
+            }
+        }
     };
 
     /*
@@ -155,7 +160,7 @@
     function addStyleBlock() {
         if (d3.select('.datamaps-style-block').empty()) {
             d3.select('head').append('style').attr('class', 'datamaps-style-block')
-                .html('.datamap path.datamaps-graticule { fill: none; stroke: #777; stroke-width: 0.5px; stroke-opacity: .5; pointer-events: none; } .datamap .labels {pointer-events: none;} .datamap path {stroke: #FFFFFF; stroke-width: 1px;} .datamaps-legend dt, .datamaps-legend dd { float: left; margin: 0 3px 0 0;} .datamaps-legend dd {width: 20px; margin-right: 6px; border-radius: 3px;} .datamaps-legend {padding-bottom: 20px; z-index: 1001; position: absolute; left: 4px; font-size: 12px; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;} .datamaps-hoverover {display: none; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; } .hoverinfo {padding: 4px; border-radius: 1px; background-color: #FFF; box-shadow: 1px 1px 5px #CCC; font-size: 12px; border: 1px solid #CCC; } .hoverinfo hr {border:1px dotted #CCC; }');
+                .html('.datamap path.datamaps-graticule { fill: none; stroke: #777; stroke-width: 0.5px; stroke-opacity: .5; pointer-events: none; } .datamap .labels {pointer-events: none;} .datamap path {stroke: #FFFFFF; stroke-width: 1px;} .datamaps-legend dt, .datamaps-legend dd { float: left; margin: 0 3px 0 0;} .datamaps-legend dd {width: 20px; margin-right: 6px; border-radius: 3px;} .datamaps-legend {padding-bottom: 20px; z-index: 1001; position: absolute; left: 4px; font-size: 12px; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;} .datamaps-hoverover {display: none; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; } .hoverinfo {font-size: 12px; } .hoverinfo hr {border:1px dotted #CCC; }');
         }
     }
 
@@ -547,14 +552,13 @@
 
     function handlePins(layer, data, options) {
         var self = this,
-            options = this.options,
             svg = this.svg;
 
         if (!data || (data && !data.slice)) {
             throw "Datamaps Error - pins must be an array";
         }
 
-        var pins = layer.selectAll('svg.pin').data(data, JSON.stringify);
+        var pins = layer.selectAll('.pin').data(data, JSON.stringify);
 
         pins
             .enter()
@@ -574,6 +578,43 @@
                 if (latLng) {
                     return 'translate(' + (latLng[0] - 10) + ', ' + (latLng[1] - 30) + ')';
                 }
+            })
+            .attr('data-info', function (d) {
+                return JSON.stringify(d);
+            })
+            .on('mouseover', function(datum) {
+                var $this = d3.select(this);
+                if (options.highlightOnHover) {
+                    //save all previous attributes for mouseout
+                    var previousAttributes = {
+                        'fill': $this.style('fill'),
+                        'stroke': $this.style('stroke'),
+                        'stroke-width': $this.style('stroke-width'),
+                        'fill-opacity': $this.style('fill-opacity')
+                    };
+
+                    $this
+                        .style('fill', val(datum.highlightFillColor, options.highlightFillColor, datum))
+                        .style('stroke', val(datum.highlightBorderColor, options.highlightBorderColor, datum))
+                        .style('stroke-width', val(datum.highlightBorderWidth, options.highlightBorderWidth, datum))
+                        .style('fill-opacity', val(datum.highlightFillOpacity, options.highlightFillOpacity, datum))
+                        .attr('data-previousAttributes', JSON.stringify(previousAttributes));
+                }
+
+                if (options.popupOnHover) {
+                    self.updatePopup($this, datum, options, svg);
+                }
+            })
+            .on('mouseout', function(datum) {
+                if (options.highlightOnHover) {
+                    //reapply previous attributes
+                    var previousAttributes = JSON.parse($this.attr('data-previousAttributes'));
+                    for (var attr in previousAttributes) {
+                        $this.style(attr, previousAttributes[attr]);
+                    }
+                }
+
+                d3.selectAll('.datamaps-hoverover').style('display', 'none');
             })
             /*.append('image')
             .attr('width', '100%')
