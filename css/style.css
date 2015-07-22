@@ -30,6 +30,7 @@ body {
 .pin:hover {
     cursor: pointer;
 }
+.datamaps-hoverover,
 .datamaps-tooltip {
     background: #fff;
     width: 200px;
