@@ -554,14 +554,11 @@
         var self = this,
             svg = this.svg;
 
-        /*if (!data || (data && !data.slice)) {
-            throw "Datamaps Error - pins must be an array";
-        }*/
-
-        //var pins = layer.selectAll('.pin').data(data, JSON.stringify);
         layer.selectAll('.pin').remove();
+        d3.selectAll('.datamaps-tooltip').style('display', 'none');
 
-        layer.append('svg:image')
+        var g = layer.append('g');
+            g.append('svg:image')
             .datum(data)
             .attr('class', 'pin')
             .attr('width', 20)
@@ -582,63 +579,9 @@
             .attr('data-info', function (d) {
                 return JSON.stringify(d);
             })
-
-        /*pins
-            .enter()
-            .append('svg:image')
-            .attr('class', 'pin')
-            .attr('width', 20)
-            .attr('height', 30)
-            .attr('xlink:href', 'images/pin.png')
-            .attr('transform', function(datum) {
-                var latLng;
-                if (datumHasCoords(datum)) {
-                    latLng = self.latLngToXY(datum.latitude, datum.longitude);
-                }
-                else if (datum.centered) {
-                    latLng = self.path.centroid(svg.select('path.' + datum.centered).data()[0]);
-                }
-                if (latLng) {
-                    return 'translate(' + (latLng[0] - 10) + ', ' + (latLng[1] - 30) + ')';
-                }
-            })
-            .attr('data-info', function (d) {
-                return JSON.stringify(d);
-            })
-            .on('mouseover', function(datum) {
-                var $this = d3.select(this);
-                if (options.highlightOnHover) {
-                    //save all previous attributes for mouseout
-                    var previousAttributes = {
-                        'fill': $this.style('fill'),
-                        'stroke': $this.style('stroke'),
-                        'stroke-width': $this.style('stroke-width'),
-                        'fill-opacity': $this.style('fill-opacity')
-                    };
-
-                    $this
-                        .style('fill', val(datum.highlightFillColor, options.highlightFillColor, datum))
-                        .style('stroke', val(datum.highlightBorderColor, options.highlightBorderColor, datum))
-                        .style('stroke-width', val(datum.highlightBorderWidth, options.highlightBorderWidth, datum))
-                        .style('fill-opacity', val(datum.highlightFillOpacity, options.highlightFillOpacity, datum))
-                        .attr('data-previousAttributes', JSON.stringify(previousAttributes));
-                }
-
-                if (options.popupOnHover) {
-                    self.updatePopup($this, datum, options, svg);
-                }
-            })
-            .on('mouseout', function(datum) {
-                if (options.highlightOnHover) {
-                    //reapply previous attributes
-                    var previousAttributes = JSON.parse($this.attr('data-previousAttributes'));
-                    for (var attr in previousAttributes) {
-                        $this.style(attr, previousAttributes[attr]);
-                    }
-                }
-
-                d3.selectAll('.datamaps-hoverover').style('display', 'none');
-            })*/
+            .each(function(d) {
+                self.updateTooltip(d, options, svg);
+            });
 
         function datumHasCoords(datum) {
             return typeof datum !== 'undefined' && typeof datum.latitude !== 'undefined' && typeof datum.longitude !== 'undefined';
@@ -760,6 +703,11 @@
                     .attr('class', 'datamaps-hoverover')
                     .style('z-index', 10001)
                     .style('position', 'absolute');
+                tooltip = d3.select(self.options.element).append('div')
+                    .attr('class', 'datamaps-tooltip')
+                    .style('z-index', 10002)
+                    .style('position', 'absolute')
+                    .style('display', 'none');
             }
 
             //fire off finished callback
@@ -12567,6 +12515,30 @@
         });
 
         d3.select(self.svg[0][0].parentNode).select('.datamaps-hoverover').style('display', 'block');
+    };
+
+    Datamap.prototype.updateTooltip = function (d, options) {
+        var self = this;
+        var latLng;
+        if (datumHasCoords(d)) {
+            latLng = self.latLngToXY(d.latitude, d.longitude);
+        }
+        else if (d.centered) {
+            latLng = self.path.centroid(svg.select('path.' + d.centered).data()[0]);
+        }
+        if (latLng) {
+            d3.select(self.svg[0][0].parentNode).select('.datamaps-tooltip')
+                .style('top', latLng[1] + "px")
+                .html(function () {
+                    return options.popupTemplate(d, d);
+                })
+                .style('left', (latLng[0] + 0) + "px")
+                .style('display', 'block');
+        }
+
+        function datumHasCoords(datum) {
+            return typeof datum !== 'undefined' && typeof datum.latitude !== 'undefined' && typeof datum.longitude !== 'undefined';
+        }
     };
 
     Datamap.prototype.addPlugin = function (name, pluginFn) {

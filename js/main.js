@@ -23,6 +23,7 @@
         d3.json('http://50.116.39.186/get_api_data.php', function(error, data) {
             if (data && data !== 'undefined') {
                 var offenses = data.response.result.rows;
+                d3.select('#alerts_counter span').text(offenses.length);
                 var i = 0;
                 drawPin(offenses, i);
             }
@@ -34,7 +35,7 @@
     }
 
     function drawPin(offenses, i) {
-        if(i < offenses.length) {
+        if (i < offenses.length) {
             var offense = offenses[i];
             if (offense.length > 0) {
                 var title = offense[0];
@@ -46,7 +47,8 @@
                     latitude: coordinates[0],
                     longitude: coordinates[1],
                     radius: 5,
-                    borderWidth: 0
+                    borderWidth: 0,
+                    title: title
                 }, {
                     popupTemplate: function (geo, data) {
                         return data.title;
@@ -57,6 +59,9 @@
                     drawPin(offenses, i);
                 }, 5000);
             }
+        }
+        else {
+            load();
         }
 
     }
