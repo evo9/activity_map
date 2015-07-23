@@ -48,16 +48,18 @@
                     longitude: coordinates[1],
                     radius: 5,
                     borderWidth: 0,
-                    title: title
+                    title: title,
+                    device: offense[2]
                 }, {
                     popupTemplate: function (geo, data) {
-                        return data.title;
+                    var html = '<p>' + data.title + '</p><p><strong>Device model:</strong> ' + data.device + '</p>';
+                        return html;
                     }
                 });
                 setTimeout(function() {
                     i ++;
                     drawPin(offenses, i);
-                }, 5000);
+                }, 2000);
             }
         }
         else {
