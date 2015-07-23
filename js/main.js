@@ -37,6 +37,7 @@
     function drawPin(offenses, i) {
         if (i < offenses.length) {
             var offense = offenses[i];
+            var update = false;
             if (offense.length > 0) {
                 var title = offense[0];
                 var coordinates = offense[1];
@@ -56,9 +57,21 @@
                         return html;
                     }
                 });
+
+
                 setTimeout(function() {
-                    i ++;
-                    drawPin(offenses, i);
+                    $('.datamaps-tooltip').each(function() {
+                        if (!$(this).is(':hover')) {
+                            i ++;
+                            drawPin(offenses, i);
+                        }
+                        else {
+                            $(this).mouseout(function() {
+                                i ++;
+                                drawPin(offenses, i);
+                            });
+                        }
+                    });
                 }, 2000);
             }
         }
