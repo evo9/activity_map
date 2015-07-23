@@ -25,7 +25,8 @@
                 var offenses = data.response.result.rows;
                 d3.select('#alerts_counter span').text(offenses.length);
                 var i = 0;
-                drawPin(offenses, i);
+                var update = true;
+                drawPin(offenses, i, update);
             }
         });
     }
@@ -34,10 +35,9 @@
         map.svg.selectAll("g").attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
     }
 
-    function drawPin(offenses, i) {
+    function drawPin(offenses, i, update) {
         if (i < offenses.length) {
             var offense = offenses[i];
-            var update = false;
             if (offense.length > 0) {
                 var title = offense[0];
                 var coordinates = offense[1];
@@ -58,20 +58,19 @@
                     }
                 });
 
-
+                i ++;
                 setTimeout(function() {
-                    $('.datamaps-tooltip').each(function() {
-                        if (!$(this).is(':hover')) {
-                            i ++;
-                            drawPin(offenses, i);
-                        }
-                        else {
+                    if ($('.datamaps-tooltip').is(':hover')) {
+                        if (update) {
                             $(this).mouseout(function() {
-                                i ++;
-                                drawPin(offenses, i);
+                                update = false;
+                                drawPin(offenses, i, update);
                             });
                         }
-                    });
+                        return false;
+                    }
+                    update = true;
+                    drawPin(offenses, i, update);
                 }, 2000);
             }
         }
