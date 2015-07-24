@@ -6,7 +6,7 @@
             defaultFill: '#929397'
         },
         geographyConfig: {
-            highlightFillColor: '#0f3b47',
+            highlightFillColor: '#00a4f2',
             highlightBorderColor: '#fff'
         }
     });

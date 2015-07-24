@@ -701,11 +701,11 @@
             if (self.options.geographyConfig.popupOnHover || self.options.bubblesConfig.popupOnHover) {
                 hoverover = d3.select(self.options.element).append('div')
                     .attr('class', 'datamaps-hoverover')
-                    .style('z-index', 10001)
+                    .style('z-index', 10002)
                     .style('position', 'absolute');
                 tooltip = d3.select(self.options.element).append('div')
                     .attr('class', 'datamaps-tooltip')
-                    .style('z-index', 10002)
+                    .style('z-index', 10001)
                     .style('position', 'absolute')
                     .style('display', 'none');
             }
