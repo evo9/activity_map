@@ -3,7 +3,7 @@
         element: document.getElementById('map'),
         responsive: true,
         fills: {
-            defaultFill: '#78a7b9'
+            defaultFill: '#929397'
         },
         geographyConfig: {
             highlightFillColor: '#0f3b47',
@@ -17,13 +17,14 @@
     window.addEventListener('resize', function(event){
         map.resize();
     });
+
     load();
 
     function load() {
         d3.json('http://50.116.39.186/get_api_data.php', function(error, data) {
             if (data && data !== 'undefined') {
                 var offenses = data.response.result.rows;
-                d3.select('#alerts_counter span').text(offenses.length);
+                //d3.select('#alerts_counter span').text(offenses.length);
                 var i = 0;
                 drawPin(offenses, i);
             }
