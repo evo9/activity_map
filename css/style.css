@@ -73,7 +73,7 @@ body {
     z-index: 2;
 }
 #alerts_list ul li {
-    padding: 3px 0;
+    padding: 3px 10px;
     margin: 0 10px;
     color: #35cdff;
     white-space: nowrap;

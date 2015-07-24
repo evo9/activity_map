@@ -555,15 +555,17 @@
             svg = this.svg;
 
         layer.selectAll('.pin').remove();
-        d3.selectAll('.datamaps-tooltip').style('display', 'none');
-
-        var g = layer.append('g');
-        g.append('svg:image')
-            .datum(data)
-            .attr('class', 'pin')
+        var pins = layer.selectAll('.pin').data(data, JSON.stringify);
+        pins
+            .enter()
+            .append('g')
+            .append('svg:image')
+            .attr('class', function(d) {
+                return 'pin ' + d.cls;
+            })
             .attr('width', 20)
             .attr('height', 30)
-            .attr('xlink:href', 'images/pin.png')
+            .attr('xlink:href', 'images/pin_.png')
             .attr('transform', function (d) {
                 var latLng;
                 if (datumHasCoords(d)) {
@@ -579,15 +581,36 @@
             .attr('data-info', function (d) {
                 return JSON.stringify(d);
             })
-            .style('opacity', '0.5')
-            .each(function (d) {
+            .style('opacity', '0.6')
+             /*.each(function (d) {
                 self.updateTooltip(d, options, svg);
-            });
+            })*/;
 
         function datumHasCoords(datum) {
             return typeof datum !== 'undefined' && typeof datum.latitude !== 'undefined' && typeof datum.longitude !== 'undefined';
         }
 
+    }
+
+    function pinsLegend(layer, data, options) {
+        var self = this,
+            svg = this.svg;
+
+       /* d3.selectAll('#alerts_list ul li').remove();
+
+        //var items = d3.select('#alerts_list ul').data(data, JSON.stringify);
+
+        d3.select('#alerts_list ul')
+            .data(data, JSON.stringify)
+            .enter()
+            .append('li')
+            .attr('class', function(d) {
+                console.log(d);
+                return d.id;
+            })
+            .text(function(d) {
+                return d.title;
+            })*/
     }
 
     //stolen from underscore.js
@@ -626,6 +649,7 @@
         /* Add core plugins to this instance */
         this.addPlugin('bubbles', handleBubbles);
         this.addPlugin('pins', handlePins);
+        this.addPlugin('pinsLegend', pinsLegend);
         this.addPlugin('legend', addLegend);
         this.addPlugin('arc', handleArcs);
         this.addPlugin('labels', handleLabels);

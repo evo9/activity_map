@@ -579,7 +579,6 @@
             .attr('data-info', function (d) {
                 return JSON.stringify(d);
             })
-            .style('opacity', '0.5')
             .each(function (d) {
                 self.updateTooltip(d, options, svg);
             });
