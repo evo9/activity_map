@@ -66,7 +66,7 @@
                         i ++;
                         drawPin(offenses, i);
                     }
-                }, 2000);
+                }, 1500);
             }
         }
         else {
