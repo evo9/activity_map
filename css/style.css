@@ -43,6 +43,9 @@ body {
     color: #00a4f2;
     text-transform: uppercase;
 }
+.device_model {
+    color: #00a4f2;
+}
 
 /***** Test Design *****/
 #alerts_list, #alerts_list .bg, #alerts_list ul {
@@ -53,6 +56,9 @@ body {
 #alerts_list {
     right: 40px;
     top: 10px;
+    position: absolute;
+    width: 400px;
+    height: 110px;
     border: 1px solid #00a4f2;
     -webkit-box-shadow: 0 0 5px #00a4f2;
     -moz-box-shadow: 0 0 5px #00a4f2;

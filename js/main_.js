@@ -47,18 +47,12 @@
 
                         pins.push(pin);
 
-                        $('#alerts_list ul').append('<li class="' + cls + '">' + title + '</li>');
-
                         alerts.push({
                             cls: cls,
                             title: title
                         });
                     }
                 }
-
-                $('#alerts_list ul').mCustomScrollbar({
-                    theme: 'minimal'
-                });
 
                 map.pins(pins, {
                     popupTemplate: function (geo, data) {
@@ -70,44 +64,5 @@
                 map.pinsLegend(alerts);
             }
         });
-    }
-
-    function drawPin(offenses, i) {
-        if (i < offenses.length) {
-            var offense = offenses[i];
-            if (offense.length > 0) {
-                var title = offense[0];
-                var coordinates = offense[1];
-                if (coordinates.length > 0) {
-                    coordinates = coordinates.split(',');
-                }
-                map.pins({
-                    latitude: coordinates[0],
-                    longitude: coordinates[1],
-                    radius: 5,
-                    borderWidth: 0,
-                    title: title,
-                    device: offense[2]
-                }, {
-                    popupTemplate: function (geo, data) {
-                    var html = '<p>' + data.title + '</p><p><strong>Device model:</strong> ' + data.device + '</p>';
-                        return html;
-                    }
-                });
-
-                setTimeout(function() {
-                    if ($('.datamaps-tooltip').is(':hover')) {
-                        drawPin(offenses, i);
-                    }
-                    else {
-                        i ++;
-                        drawPin(offenses, i);
-                    }
-                }, 1500);
-            }
-        }
-        else {
-            load();
-        }
     }
 })();

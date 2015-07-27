@@ -560,8 +560,12 @@
             .enter()
             .append('g')
             .append('svg:image')
-            .attr('class', function(d) {
-                return 'pin ' + d.cls;
+            .attr('id', function(d) {
+                return '' + d.cls;
+            })
+            .attr('class', 'pin')
+            .attr('data-info', function (d) {
+                return JSON.stringify(d);
             })
             .attr('width', 20)
             .attr('height', 30)
@@ -578,13 +582,12 @@
                     return 'translate(' + (latLng[0] - 10) + ', ' + (latLng[1] - 30) + ')';
                 }
             })
-            .attr('data-info', function (d) {
-                return JSON.stringify(d);
-            })
-            .style('opacity', '0.6')
+            .style('opacity', 0.2)
              /*.each(function (d) {
                 self.updateTooltip(d, options, svg);
             })*/;
+
+
 
         function datumHasCoords(datum) {
             return typeof datum !== 'undefined' && typeof datum.latitude !== 'undefined' && typeof datum.longitude !== 'undefined';
@@ -594,23 +597,58 @@
 
     function pinsLegend(layer, data, options) {
         var self = this,
-            svg = this.svg;
+            html = '';
 
-       /* d3.selectAll('#alerts_list ul li').remove();
+        for (var i = 0; i < data.length; i ++) {
+            html += '<li class="' + data[i].cls + '">' + data[i].title + '</li>';
+        }
+        d3.select('#alerts_list ul').html(html);
 
-        //var items = d3.select('#alerts_list ul').data(data, JSON.stringify);
+        $('#alerts_list ul').mCustomScrollbar({
+            theme: 'minimal'
+        });
 
-        d3.select('#alerts_list ul')
-            .data(data, JSON.stringify)
-            .enter()
-            .append('li')
-            .attr('class', function(d) {
-                console.log(d);
-                return d.id;
-            })
-            .text(function(d) {
-                return d.title;
-            })*/
+        var i = 0;
+        alertsList(data, i, self);
+    }
+
+    function alertsList(alerts, i, self) {
+        if (i < alerts.length) {
+            if ($('#alerts_list ul li.active').length > 0) {
+                setActiveItemPosition();
+                $('#alerts_list ul li.active').removeClass('active');
+                d3.selectAll('.pin').attr('class', 'pin');
+            }
+            $('#alerts_list ul li.' + alerts[i].cls).addClass('active');
+            var pin = d3.select('#' + alerts[i].cls);
+            pin.attr('class', 'pin active');
+
+            self.updateTooltip(pin);
+
+            setTimeout(function() {
+                if (!$('#alerts_list ul').is(':hover')) {
+                    i ++;
+                }
+                alertsList(alerts, i, self);
+            }, 2000);
+        }
+    }
+
+    function setActiveItemPosition() {
+        var ulH = $('#alerts_list ul').height();
+        var itemH = $('#alerts_list ul li').height();
+        var itemActivePos = $('#alerts_list ul li.active').offset().top;
+        var centerPos = ulH / 2 - itemH / 2;
+        if (itemActivePos > centerPos) {
+            var offset = $('#alerts_list .mCSB_container').offset().top;
+            offset = offset - centerPos;
+            $('#alerts_list .mCSB_container').animate({ top: offset }, 300);
+        }
+    }
+
+    function pinsTooltip() {
+        var pin = d3.select('.pin.active');
+
     }
 
     //stolen from underscore.js
@@ -733,6 +771,19 @@
                     .style('z-index', 10001)
                     .style('position', 'absolute')
                     .style('display', 'none');
+                /*tooltip = d3.select(self.options.element).append('div')
+                    .attr('class', 'datamaps-tooltip')
+                    .style('z-index', 10001)
+                    .style('position', 'absolute')
+                    .style('display', 'none');
+            .append('div')
+                    .attr('id', 'alerts_list');
+
+                alertsList.append('div')
+                    .attr('class', 'bg');
+
+                alertsList.append('ul');*/
+
             }
 
             //fire off finished callback
@@ -12542,22 +12593,23 @@
         d3.select(self.svg[0][0].parentNode).select('.datamaps-hoverover').style('display', 'block');
     };
 
-    Datamap.prototype.updateTooltip = function (d, options) {
-        var self = this;
-        var latLng;
-        if (datumHasCoords(d)) {
-            latLng = self.latLngToXY(d.latitude, d.longitude);
+    Datamap.prototype.updateTooltip = function (element) {
+        var self = this,
+            latLng,
+            data = JSON.parse(element.attr('data-info'));
+        if (datumHasCoords(data)) {
+            latLng = self.latLngToXY(data.latitude, data.longitude);
         }
-        else if (d.centered) {
-            latLng = self.path.centroid(svg.select('path.' + d.centered).data()[0]);
+        else if (data.centered) {
+            latLng = self.path.centroid(svg.select('path.' + data.centered).data()[0]);
         }
         if (latLng) {
             d3.select(self.svg[0][0].parentNode).select('.datamaps-tooltip')
-                .style('top', latLng[1] + "px")
+                .style('top', (latLng[1] + 10) + "px")
                 .html(function () {
-                    return options.popupTemplate(d, d);
+                    return '<div class="hoverinfo"><p>' + data.title + '</p><p class="device_model">Device model: ' + data.device + '</p></div>';
                 })
-                .style('left', (latLng[0] + 0) + "px")
+                .style('left', (latLng[0] + 10) + "px")
                 .style('display', 'block');
         }
 
