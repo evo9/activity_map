@@ -46,6 +46,12 @@ body {
 .device_model {
     color: #00a4f2;
 }
+.pin {
+    opacity: 0.01;
+}
+.pin.active {
+    opacity: 1;
+}
 
 /***** Test Design *****/
 #alerts_list, #alerts_list .bg, #alerts_list ul {

@@ -556,17 +556,11 @@
 
         layer.selectAll('.pin').remove();
         var pins = layer.selectAll('.pin').data(data, JSON.stringify);
+
         pins
             .enter()
             .append('g')
             .append('svg:image')
-            .attr('id', function(d) {
-                return '' + d.cls;
-            })
-            .attr('class', 'pin')
-            .attr('data-info', function (d) {
-                return JSON.stringify(d);
-            })
             .attr('width', 20)
             .attr('height', 30)
             .attr('xlink:href', 'images/pin_.png')
@@ -582,7 +576,13 @@
                     return 'translate(' + (latLng[0] - 10) + ', ' + (latLng[1] - 30) + ')';
                 }
             })
-            .style('opacity', 0.2)
+            .attr('id', function(d) {
+                return '' + d.cls;
+            })
+            .attr('class', 'pin')
+            .attr('data-info', function (d) {
+                return JSON.stringify(d);
+            })
              /*.each(function (d) {
                 self.updateTooltip(d, options, svg);
             })*/;
@@ -12605,11 +12605,11 @@
         }
         if (latLng) {
             d3.select(self.svg[0][0].parentNode).select('.datamaps-tooltip')
-                .style('top', (latLng[1] + 10) + "px")
+                .style('top', latLng[1] + "px")
                 .html(function () {
                     return '<div class="hoverinfo"><p>' + data.title + '</p><p class="device_model">Device model: ' + data.device + '</p></div>';
                 })
-                .style('left', (latLng[0] + 10) + "px")
+                .style('left', (latLng[0] + 5) + "px")
                 .style('display', 'block');
         }
 
