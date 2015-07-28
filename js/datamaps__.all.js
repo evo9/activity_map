@@ -64,7 +64,8 @@
         },
         iterator: 0,
         showPin: null,
-        update: true
+        update: true,
+        timeoutId: null
     };
 
     /*
@@ -587,76 +588,76 @@
                 return JSON.stringify(d);
             });
 
-
-
         function datumHasCoords(datum) {
             return typeof datum !== 'undefined' && typeof datum.latitude !== 'undefined' && typeof datum.longitude !== 'undefined';
         }
 
-    }
+        alertsList(data, null, self);
 
-    function pinsLegend(layer, data, options) {
-        var self = this,
-            html = '';
-
-        for (var i = 0; i < data.length; i ++) {
-            html += '<li class="' + data[i].cls + '" data-id="' + data[i].id + '">' + data[i].title + '</li>';
-        }
-        d3.select('#alerts_list ul').html(html);
-
-        $('#alerts_list ul').mCustomScrollbar({
-            theme: 'minimal'
-        });
-
-        d3.selectAll('#alerts_list ul li').on('click', function() {
-            var $this = d3.select(this);
-            var id = $this.attr('data-id');
+        $('body').on('click', '#alerts_list ul li', function() {
+            var id = $(this).data('id');
             defaultOptions.update = false;
             defaultOptions.showPin = id;
+            if (defaultOptions.timeoutId) {
+                clearTimeout(defaultOptions.timeoutId);
+                if ($('#alerts_list ul li.active').length > 0) {
+                    d3.selectAll('.pin').attr('class', 'pin hide');
+                }
+                alertsList(data, null, self)
+            }
         });
 
-        alertsList(data, null, self);
     }
 
-    function alertsList(alerts, i, self) {
-        if (!defaultOptions.showPin) {
-            i = defaultOptions.iterator;
-        }
-        else {
-            i = defaultOptions.showPin;
-        }
-
-        if (i < alerts.length) {
-            if ($('#alerts_list ul li.active').length > 0) {
-                setActiveItemPosition();
-                $('#alerts_list ul li.active').removeClass('active');
-                d3.selectAll('.pin').attr('class', 'pin hide');
+    function alertsList(data, i, self) {
+        if (data.length > 0) {
+            if (defaultOptions.showPin === null) {
+                i = defaultOptions.iterator;
             }
-            $('#alerts_list ul li.' + alerts[i].cls).addClass('active');
-            var pin = d3.select('#' + alerts[i].cls);
-            pin.attr('class', 'pin active')
+            else {
+                i = defaultOptions.showPin;
+            }
 
-            self.updateTooltip(pin);
-
-            setTimeout(function() {
+            if (i < data.length) {
                 if (!$('#alerts_list ul').is(':hover')) {
-                    i = defaultOptions.iterator ++;
-                    defaultOptions.update = true;
-                    defaultOptions.showPin = null;
+                    if ($('#alerts_list ul li.active').length > 0) {
+                        $('#alerts_list ul li.active').removeClass('active');
+                        d3.selectAll('.pin').attr('class', 'pin hide');
+                    }
+
+                    d3.select('#alerts_list ul .mCSB_container')
+                        .append('li')
+                        .attr('class', data[i].cls + ' active')
+                        .attr('data-id', data[i].id)
+                        .text(data[i].title);
+
+                    scrollToActive();
                 }
-                alertsList(alerts, i, self);
-            }, 1500);
+
+                var pin = d3.select('#' + data[i].cls);
+                pin.attr('class', 'pin active')
+
+                self.updateTooltip(pin);
+
+                defaultOptions.timeoutId = setTimeout(function() {
+                    if (!$('#alerts_list ul').is(':hover')) {
+                        i = defaultOptions.iterator ++;
+                        defaultOptions.update = true;
+                        defaultOptions.showPin = null;
+                    }
+                    alertsList(data, i, self);
+                }, 1500);
+            }
         }
     }
 
-    function setActiveItemPosition() {
+    function scrollToActive() {
         var ulH = $('#alerts_list ul').height();
-        var itemH = $('#alerts_list ul li').height();
-        var itemActivePos = $('#alerts_list ul li.active').offset().top;
-        var centerPos = ulH / 2 - itemH / 2;
-        if (itemActivePos > centerPos) {
-            var offset = $('#alerts_list .mCSB_container').offset().top;
-            offset = offset - centerPos;
+        var containerH = $('#alerts_list .mCSB_container').height();
+
+        if (containerH > ulH) {
+            var offset = containerH - ulH;
+            offset = offset * (-1)
             $('#alerts_list .mCSB_container').animate({ top: offset }, 300);
         }
     }
@@ -697,7 +698,6 @@
         /* Add core plugins to this instance */
         this.addPlugin('bubbles', handleBubbles);
         this.addPlugin('pins', handlePins);
-        this.addPlugin('pinsLegend', pinsLegend);
         this.addPlugin('legend', addLegend);
         this.addPlugin('arc', handleArcs);
         this.addPlugin('labels', handleLabels);

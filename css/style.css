@@ -92,18 +92,16 @@ body {
 #alerts_list ul li {
     padding: 3px 10px;
     margin: 0 10px;
-    color: #35cdff;
+    color: #929397;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    border-top: 1px dotted #fff;
 }
 #alerts_list ul li:first-child {
     border: none;
 }
 #alerts_list ul li.active, #alerts_list ul li:hover {
     color: #00a4f2;
-    /*text-shadow: 0 0 2px #00a4f2;*/
-    font-size: 16px;
+    cursor: pointer;
 }
 /***** End Test Design *****/
