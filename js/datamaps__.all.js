@@ -566,7 +566,7 @@
             .append('svg:image')
             .attr('width', 20)
             .attr('height', 30)
-            .attr('xlink:href', 'images/default_pin.png')
+            .attr('xlink:href', 'images/pin__.png')
             .attr('transform', function (d) {
                 var latLng;
                 if (datumHasCoords(d)) {
@@ -634,9 +634,7 @@
             }
             $('#alerts_list ul li.' + alerts[i].cls).addClass('active');
             var pin = d3.select('#' + alerts[i].cls);
-            pin
-                .attr('xlink:href', 'images/pin_.png')
-                .attr('class', 'pin active')
+            pin.attr('class', 'pin active')
 
             self.updateTooltip(pin);
 
