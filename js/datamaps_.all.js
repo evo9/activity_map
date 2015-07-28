@@ -582,7 +582,7 @@
             .attr('id', function(d) {
                 return '' + d.cls;
             })
-            .attr('class', 'pin')
+            .attr('class', 'pin opacity')
             .attr('data-info', function (d) {
                 return JSON.stringify(d);
             });
@@ -630,13 +630,13 @@
             if ($('#alerts_list ul li.active').length > 0) {
                 setActiveItemPosition();
                 $('#alerts_list ul li.active').removeClass('active');
-                d3.selectAll('.pin').attr('class', 'pin');
+                d3.selectAll('.pin').attr('class', 'pin opacity');
             }
             $('#alerts_list ul li.' + alerts[i].cls).addClass('active');
             var pin = d3.select('#' + alerts[i].cls);
             pin
                 .attr('xlink:href', 'images/pin_.png')
-                .attr('class', 'pin active')
+                .attr('class', 'pin opacity active')
 
             self.updateTooltip(pin);
 

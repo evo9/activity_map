@@ -46,7 +46,7 @@ body {
 .device_model {
     color: #00a4f2;
 }
-.pin {
+.opacity {
     opacity: 0.01;
 }
 .pin.active {

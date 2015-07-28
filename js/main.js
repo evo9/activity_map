@@ -24,7 +24,6 @@
         d3.json('http://50.116.39.186/get_api_data.php', function(error, data) {
             if (data && data !== 'undefined') {
                 var offenses = data.response.result.rows;
-                //d3.select('#alerts_counter span').text(offenses.length);
                 var i = 0;
                 drawPin(offenses, i);
             }
@@ -53,19 +52,16 @@
                     device: offense[2]
                 }, {
                     popupTemplate: function (geo, data) {
-                    var html = '<p>' + data.title + '</p><p><strong>Device model:</strong> ' + data.device + '</p>';
+                    var html = '<p>' + data.title + '</p><p class="device_model">Device model: ' + data.device + '</p>';
                         return html;
                     }
                 });
 
                 setTimeout(function() {
                     if ($('.datamaps-tooltip').is(':hover')) {
-                        drawPin(offenses, i);
-                    }
-                    else {
                         i ++;
-                        drawPin(offenses, i);
                     }
+                    drawPin(offenses, i);
                 }, 1500);
             }
         }

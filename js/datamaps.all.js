@@ -12532,7 +12532,7 @@
                 .html(function () {
                     return options.popupTemplate(d, d);
                 })
-                .style('left', (latLng[0] + 0) + "px")
+                .style('left', (latLng[0] + 5) + "px")
                 .style('display', 'block');
         }
 
