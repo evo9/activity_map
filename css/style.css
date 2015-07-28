@@ -52,6 +52,10 @@ body {
 .pin.active {
     opacity: 1;
     z-index: 5;
+    display: block;
+}
+.hide {
+    display: none;
 }
 
 /***** Test Design *****/

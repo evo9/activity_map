@@ -62,7 +62,9 @@
                 return '<div class="hoverinfo"><strong>' + data.name + '</strong></div>';
             }
         },
-        iterator: 0
+        iterator: 0,
+        showPin: null,
+        update: true
     };
 
     /*
@@ -580,7 +582,7 @@
             .attr('id', function(d) {
                 return '' + d.cls;
             })
-            .attr('class', 'pin')
+            .attr('class', 'pin hide')
             .attr('data-info', function (d) {
                 return JSON.stringify(d);
             });
@@ -595,8 +597,7 @@
 
     function pinsLegend(layer, data, options) {
         var self = this,
-            html = '',
-            update = true;
+            html = '';
 
         for (var i = 0; i < data.length; i ++) {
             html += '<li class="' + data[i].cls + '" data-id="' + data[i].id + '">' + data[i].title + '</li>';
@@ -610,23 +611,26 @@
         d3.selectAll('#alerts_list ul li').on('click', function() {
             var $this = d3.select(this);
             var id = $this.attr('data-id');
-            update = false;
-            alertsList(data, id, self, update);
+            defaultOptions.update = false;
+            defaultOptions.showPin = id;
         });
 
-        alertsList(data, null, self, update);
+        alertsList(data, null, self);
     }
 
-    function alertsList(alerts, i, self, update) {
-        if (!i || !update) {
+    function alertsList(alerts, i, self) {
+        if (!defaultOptions.showPin) {
             i = defaultOptions.iterator;
+        }
+        else {
+            i = defaultOptions.showPin;
         }
 
         if (i < alerts.length) {
             if ($('#alerts_list ul li.active').length > 0) {
                 setActiveItemPosition();
                 $('#alerts_list ul li.active').removeClass('active');
-                d3.selectAll('.pin').attr('class', 'pin');
+                d3.selectAll('.pin').attr('class', 'pin hide');
             }
             $('#alerts_list ul li.' + alerts[i].cls).addClass('active');
             var pin = d3.select('#' + alerts[i].cls);
@@ -639,10 +643,11 @@
             setTimeout(function() {
                 if (!$('#alerts_list ul').is(':hover')) {
                     i = defaultOptions.iterator ++;
-                    update = true;
+                    defaultOptions.update = true;
+                    defaultOptions.showPin = null;
                 }
-                alertsList(alerts, i, self, update);
-            }, 2000);
+                alertsList(alerts, i, self);
+            }, 1500);
         }
     }
 

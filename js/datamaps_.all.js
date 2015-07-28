@@ -62,7 +62,9 @@
                 return '<div class="hoverinfo"><strong>' + data.name + '</strong></div>';
             }
         },
-        iterator: 0
+        iterator: 0,
+        showPin: null,
+        update: true
     };
 
     /*
@@ -595,8 +597,7 @@
 
     function pinsLegend(layer, data, options) {
         var self = this,
-            html = '',
-            update = true;
+            html = '';
 
         for (var i = 0; i < data.length; i ++) {
             html += '<li class="' + data[i].cls + '" data-id="' + data[i].id + '">' + data[i].title + '</li>';
@@ -610,16 +611,19 @@
         d3.selectAll('#alerts_list ul li').on('click', function() {
             var $this = d3.select(this);
             var id = $this.attr('data-id');
-            update = false;
-            alertsList(data, id, self, update);
+            defaultOptions.update = false;
+            defaultOptions.showPin = id
         });
 
-        alertsList(data, null, self, update);
+        alertsList(data, null, self);
     }
 
-    function alertsList(alerts, i, self, update) {
-        if (!i || !update) {
+    function alertsList(alerts, i, self) {
+        if (!defaultOptions.showPin) {
             i = defaultOptions.iterator;
+        }
+        else {
+            i = defaultOptions.showPin;
         }
 
         if (i < alerts.length) {
@@ -639,10 +643,11 @@
             setTimeout(function() {
                 if (!$('#alerts_list ul').is(':hover')) {
                     i = defaultOptions.iterator ++;
-                    update = true;
+                    defaultOptions.update = true;
+                    defaultOptions.showPin = null;
                 }
-                alertsList(alerts, i, self, update);
-            }, 2000);
+                alertsList(alerts, i, self);
+            }, 1500);
         }
     }
 
