@@ -608,6 +608,13 @@
             theme: 'minimal'
         });
 
+        d3.selectAll('#alerts_list ul li').on('click', function() {
+            var $this = d3.select(this);
+            var cls = $this.attr('class');
+            var pin = d3.select('#' + cls);
+            self.updateTooltip(pin);
+        });
+
         var i = 0;
         alertsList(data, i, self);
     }
@@ -646,11 +653,6 @@
             offset = offset - centerPos;
             $('#alerts_list .mCSB_container').animate({ top: offset }, 300);
         }
-    }
-
-    function pinsTooltip() {
-        var pin = d3.select('.pin.active');
-
     }
 
     //stolen from underscore.js
@@ -773,18 +775,6 @@
                     .style('z-index', 10001)
                     .style('position', 'absolute')
                     .style('display', 'none');
-                /*tooltip = d3.select(self.options.element).append('div')
-                    .attr('class', 'datamaps-tooltip')
-                    .style('z-index', 10001)
-                    .style('position', 'absolute')
-                    .style('display', 'none');
-            .append('div')
-                    .attr('id', 'alerts_list');
-
-                alertsList.append('div')
-                    .attr('class', 'bg');
-
-                alertsList.append('ul');*/
 
             }
 

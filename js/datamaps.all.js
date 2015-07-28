@@ -576,7 +576,6 @@
                     return 'translate(' + (latLng[0] - 10) + ', ' + (latLng[1] - 30) + ')';
                 }
             })
-            .style('opacity', 0.2)
             .attr('data-info', function (d) {
                 return JSON.stringify(d);
             })
