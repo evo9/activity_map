@@ -55,7 +55,12 @@
                     }
                 }
 
-                map.pins(pins);
+                map.pins(pins, {
+                    popupTemplate: function (geo, data) {
+                        var html = '<p>' + data.title + '</p><p class="device_model">Device model: ' + data.device + '</p>';
+                        return html;
+                    }
+                });
 
                 map.pinsLegend(alerts);
             }
