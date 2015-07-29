@@ -554,61 +554,6 @@
 
     }
 
-    function handlePins(layer, data, options) {
-        var self = this,
-            svg = this.svg;
-
-        layer.selectAll('.pin').remove();
-        var pins = layer.selectAll('.pin').data(data, JSON.stringify);
-
-        pins
-            .enter()
-            .append('g')
-            .append('svg:image')
-            .attr('width', 20)
-            .attr('height', 30)
-            .attr('xlink:href', 'images/pin__.png')
-            .attr('transform', function (d) {
-                var latLng;
-                if (datumHasCoords(d)) {
-                    latLng = self.latLngToXY(d.latitude, d.longitude);
-                }
-                else if (d.centered) {
-                    latLng = self.path.centroid(svg.select('path.' + d.centered).data()[0]);
-                }
-                if (latLng) {
-                    return 'translate(' + (latLng[0] - 10) + ', ' + (latLng[1] - 30) + ')';
-                }
-            })
-            .attr('id', function(d) {
-                return '' + d.cls;
-            })
-            .attr('class', 'pin hide')
-            .attr('data-info', function (d) {
-                return JSON.stringify(d);
-            });
-
-        function datumHasCoords(datum) {
-            return typeof datum !== 'undefined' && typeof datum.latitude !== 'undefined' && typeof datum.longitude !== 'undefined';
-        }
-
-        alertsList(data, null, self);
-
-        $('body').on('click', '#alerts_list ul li', function() {
-            var id = $(this).data('id');
-            defaultOptions.update = false;
-            defaultOptions.showPin = id;
-            if (defaultOptions.timeoutId) {
-                clearTimeout(defaultOptions.timeoutId);
-                if ($('#alerts_list ul li.active').length > 0) {
-                    d3.selectAll('.pin').attr('class', 'pin hide');
-                }
-                alertsList(data, null, self)
-            }
-        });
-
-    }
-
     function alertsList(data, i, self) {
         if (data.length > 0) {
             if (defaultOptions.showPin === null) {
@@ -635,7 +580,7 @@
                 }
 
                 var pin = d3.select('#' + data[i].cls);
-                pin.attr('class', 'pin active')
+                pin.attr('class', 'pin active');
 
                 self.updateTooltip(pin);
 
@@ -697,7 +642,6 @@
 
         /* Add core plugins to this instance */
         this.addPlugin('bubbles', handleBubbles);
-        this.addPlugin('pins', handlePins);
         this.addPlugin('legend', addLegend);
         this.addPlugin('arc', handleArcs);
         this.addPlugin('labels', handleLabels);
@@ -709,6 +653,144 @@
         }
 
         return this.draw();
+    }
+
+    Datamap.prototype.load = function () {
+        var self = this;
+        d3.json('http://50.116.39.186/get_api_data.php', function(error, data) {
+            if (data && data !== 'undefined') {
+                var offenses = data.response.result.rows;
+                var pins = [];
+                for (var i = 0; i < offenses.length; i ++) {
+                    var offense = offenses[i];
+                    if (offense.length > 0) {
+                        var cls = 'item_' + (i + 1);
+                        var title = offense[0];
+                        var coordinates = offense[1];
+                        if (coordinates.length > 0) {
+                            coordinates = coordinates.split(',');
+                        }
+
+                        var pin = {
+                            id: i,
+                            cls: cls,
+                            latitude: coordinates[0],
+                            longitude: coordinates[1],
+                            title: title,
+                            device: offense[2]
+                        }
+
+                        pins.push(pin);
+                    }
+                }
+                self.drawPins(pins);
+            }
+        });
+    }
+
+    Datamap.prototype.drawPins = function (data) {
+        var svg = this.svg,
+            self = this;
+
+        svg.select('.pins').remove();
+        d3.selectAll('#alerts_list ul li').remove();
+
+        var layer = this.addLayer('pins');
+
+        var pins = layer.selectAll('.pin').data(data, JSON.stringify);
+
+        pins
+            .enter()
+            .append('g')
+            .append('svg:image')
+            .attr('width', 20)
+            .attr('height', 30)
+            .attr('xlink:href', 'images/pin__.png')
+            .attr('transform', function (d) {
+                var latLng;
+                if (datumHasCoords(d)) {
+                    latLng = self.latLngToXY(d.latitude, d.longitude);
+                }
+                else if (d.centered) {
+                    latLng = self.path.centroid(svg.select('path.' + d.centered).data()[0]);
+                }
+                if (latLng) {
+                    return 'translate(' + (latLng[0] - 10) + ', ' + (latLng[1] - 30) + ')';
+                }
+            })
+            .attr('id', function(d) {
+                return '' + d.cls;
+            })
+            .attr('class', 'pin hide')
+            .attr('data-info', function (d) {
+                return JSON.stringify(d);
+            });
+
+        function datumHasCoords(datum) {
+            return typeof datum !== 'undefined' && typeof datum.latitude !== 'undefined' && typeof datum.longitude !== 'undefined';
+        }
+
+        this.alertsList(data, null);
+
+        $('body').on('click', '#alerts_list ul li', function() {
+            var id = $(this).data('id');
+            defaultOptions.update = false;
+            defaultOptions.showPin = id;
+            if (defaultOptions.timeoutId) {
+                clearTimeout(defaultOptions.timeoutId);
+                if ($('#alerts_list ul li.active').length > 0) {
+                    d3.selectAll('.pin').attr('class', 'pin hide');
+                }
+                self.alertsList(data, null)
+            }
+        });
+    }
+
+    Datamap.prototype.alertsList = function(data, i) {
+        var self = this;
+        if (data.length > 0) {
+            if (defaultOptions.showPin === null) {
+                i = defaultOptions.iterator;
+            }
+            else {
+                i = defaultOptions.showPin;
+            }
+
+            if (i < data.length) {
+                if (!$('#alerts_list ul').is(':hover')) {
+                    if ($('#alerts_list ul li.active').length > 0) {
+                        $('#alerts_list ul li.active').removeClass('active');
+                        d3.selectAll('.pin').attr('class', 'pin hide');
+                    }
+
+                    d3.select('#alerts_list ul .mCSB_container')
+                        .append('li')
+                        .attr('class', data[i].cls + ' active')
+                        .attr('data-id', data[i].id)
+                        .text(data[i].title);
+
+                    scrollToActive();
+                }
+
+                var pin = d3.select('#' + data[i].cls);
+                pin.attr('class', 'pin active');
+
+                self.updateTooltip(pin);
+
+                defaultOptions.timeoutId = setTimeout(function() {
+                    if (!$('#alerts_list ul').is(':hover')) {
+                        i = defaultOptions.iterator ++;
+                        defaultOptions.update = true;
+                        defaultOptions.showPin = null;
+                    }
+                    self.alertsList(data, i);
+                }, 1500);
+            }
+            else {
+                defaultOptions.iterator = 0;
+                self.load();
+            }
+        }
     }
 
     // resize map

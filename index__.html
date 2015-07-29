@@ -22,6 +22,26 @@
         <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
         <script src="js/topojson.js"></script>
         <script src="js/datamaps__.all.js"></script>
-        <script src="js/main__.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#alerts_list ul').mCustomScrollbar({
+                    theme: 'minimal'
+                });
+
+                var map = new Datamap({
+                    element: document.getElementById('map'),
+                    responsive: true,
+                    fills: {
+                        defaultFill: '#929397'
+                    },
+                    geographyConfig: {
+                        highlightFillColor: '#00a4f2',
+                        highlightBorderColor: '#fff'
+                    }
+                });
+
+                map.load();
+            });
+        </script>
     </body>
 </html>
