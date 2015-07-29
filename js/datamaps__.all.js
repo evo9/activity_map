@@ -554,48 +554,6 @@
 
     }
 
-    function alertsList(data, i, self) {
-        if (data.length > 0) {
-            if (defaultOptions.showPin === null) {
-                i = defaultOptions.iterator;
-            }
-            else {
-                i = defaultOptions.showPin;
-            }
-
-            if (i < data.length) {
-                if (!$('#alerts_list ul').is(':hover')) {
-                    if ($('#alerts_list ul li.active').length > 0) {
-                        $('#alerts_list ul li.active').removeClass('active');
-                        d3.selectAll('.pin').attr('class', 'pin hide');
-                    }
-
-                    d3.select('#alerts_list ul .mCSB_container')
-                        .append('li')
-                        .attr('class', data[i].cls + ' active')
-                        .attr('data-id', data[i].id)
-                        .text(data[i].title);
-
-                    scrollToActive();
-                }
-
-                var pin = d3.select('#' + data[i].cls);
-                pin.attr('class', 'pin active');
-
-                self.updateTooltip(pin);
-
-                defaultOptions.timeoutId = setTimeout(function() {
-                    if (!$('#alerts_list ul').is(':hover')) {
-                        i = defaultOptions.iterator ++;
-                        defaultOptions.update = true;
-                        defaultOptions.showPin = null;
-                    }
-                    alertsList(data, i, self);
-                }, 1500);
-            }
-        }
-    }
-
     function scrollToActive() {
         var ulH = $('#alerts_list ul').height();
         var containerH = $('#alerts_list .mCSB_container').height();
