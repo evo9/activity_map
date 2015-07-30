@@ -6,6 +6,16 @@ body {
 .map_container {
     position: relative;
 }
+.map_container .loader {
+    position: absolute;
+    top: 40%;
+    left: 40%;
+    z-index: 99999;
+    font-size: 23px;
+    font-weight: bold;
+    color: #0411CC;
+    text-shadow: 0 0 2px #E5DE04;
+}
 .active {
     fill: blue !important;
 }
@@ -64,13 +74,13 @@ body {
 #alerts_list, #alerts_list .bg,
 #alerts_list ul, #alerts_list .heading {
     position: absolute;
-    width: 800px;
+    width: 700px;
 }
 #alerts_list {
     left: 150px;
     bottom: 100px;
     position: absolute;
-    width: 800px;
+    width: 700px;
     height: 110px;
     border: 1px solid #00a4f2;
     -webkit-box-shadow: 0 0 5px #00a4f2;
@@ -113,7 +123,7 @@ body {
     width: 490px;
 }
 #alerts_list span.device {
-    width: 240px;
+    width: 140px;
 }
 #alerts_list ul li {
     padding: 3px 0;
