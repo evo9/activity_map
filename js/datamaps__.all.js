@@ -641,7 +641,7 @@
                         pins.push(pin);
                     }
                 }
-                
+
                 $('.map_container .loader').hide();
 
                 self.drawPins(pins);

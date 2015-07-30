@@ -13,8 +13,8 @@ body {
     z-index: 99999;
     font-size: 23px;
     font-weight: bold;
-    color: #0411CC;
-    text-shadow: 0 0 2px #E5DE04;
+    color: #0411cc;
+    text-shadow: 0 0 2px #e5de04;
 }
 .active {
     fill: blue !important;
