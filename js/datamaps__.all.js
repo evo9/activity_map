@@ -733,7 +733,10 @@
                         .attr('class', 'time')
                         .text(function() {
                             var date = new Date();
-                            return date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+                            var options = {
+                                hour: "2-digit", minute: "2-digit", second: "2-digit"
+                            };
+                            return date.toLocaleTimeString("en-us", options);
                         });
                     item.append('span')
                         .attr('class', 'title')
