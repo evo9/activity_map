@@ -728,7 +728,10 @@
 
                     item.append('span')
                         .attr('class', 'time')
-                        .text('12:00');
+                        .text(function() {
+                            var date = new Date();
+                            return date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+                        });
                     item.append('span')
                         .attr('class', 'title')
                         .text(data[i].title);
