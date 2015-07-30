@@ -61,14 +61,13 @@ body {
     display: none;
 }
 
-/***** Test Design *****/
 #alerts_list, #alerts_list .bg,
 #alerts_list ul, #alerts_list .heading {
     position: absolute;
     width: 800px;
 }
 #alerts_list {
-    left: 230px;
+    left: 150px;
     bottom: 100px;
     position: absolute;
     width: 800px;
@@ -131,4 +130,10 @@ body {
     color: #00a4f2;
     cursor: pointer;
 }
-/***** End Test Design *****/
+
+.map_container .copyright {
+    position: absolute;
+    right: 20px;
+    bottom: 100px;
+    color: #00a4f2;
+}
