@@ -715,17 +715,26 @@
             }
 
             if (i < data.length) {
-                if (!$('#alerts_list ul').is(':hover')) {
+                if (!$('#alerts_list ul').is(':hover') && !$('.datamaps-tooltip').is(':hover')) {
                     if ($('#alerts_list ul li.active').length > 0) {
                         $('#alerts_list ul li.active').removeClass('active');
                         d3.selectAll('.pin').attr('class', 'pin hide');
                     }
 
-                    d3.select('#alerts_list ul .mCSB_container')
+                    var item = d3.select('#alerts_list ul .mCSB_container')
                         .append('li')
                         .attr('class', data[i].cls + ' active')
-                        .attr('data-id', data[i].id)
+                        .attr('data-id', data[i].id);
+
+                    item.append('span')
+                        .attr('class', 'time')
+                        .text('12:00');
+                    item.append('span')
+                        .attr('class', 'title')
                         .text(data[i].title);
+                    item.append('span')
+                        .attr('class', 'device')
+                        .text(data[i].device);
 
                     scrollToActive();
                 }
@@ -736,7 +745,7 @@
                 self.updateTooltip(pin);
 
                 defaultOptions.timeoutId = setTimeout(function() {
-                    if (!$('#alerts_list ul').is(':hover')) {
+                    if (!$('#alerts_list ul').is(':hover') && !$('.datamaps-tooltip').is(':hover')) {
                         i = defaultOptions.iterator ++;
                         defaultOptions.update = true;
                         defaultOptions.showPin = null;

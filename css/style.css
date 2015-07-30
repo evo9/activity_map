@@ -9,12 +9,15 @@ body {
 .active {
     fill: blue !important;
 }
+#map {
+    margin: -50px 0 0;
+}
 #logo {
     width: 300px;
-    height: 150px;
+    height: 85px;
     position: absolute;
     z-index: 999;
-    top: 10px;
+    top: 55px;
     left: 10px;
 }
 #logo img {
@@ -59,39 +62,63 @@ body {
 }
 
 /***** Test Design *****/
-#alerts_list, #alerts_list .bg, #alerts_list ul {
+#alerts_list, #alerts_list .bg,
+#alerts_list ul, #alerts_list .heading {
     position: absolute;
-    width: 400px;
-    height: 110px;
+    width: 800px;
 }
 #alerts_list {
-    right: 40px;
-    top: 10px;
+    left: 230px;
+    bottom: 20px;
     position: absolute;
-    width: 400px;
+    width: 800px;
     height: 110px;
     border: 1px solid #00a4f2;
     -webkit-box-shadow: 0 0 5px #00a4f2;
     -moz-box-shadow: 0 0 5px #00a4f2;
     box-shadow: 0 0 5px #00a4f2;
-}
-#alerts_list .bg, #alerts_list ul {
-    top: 0;
-    right: 0;
+    font-size: 13px;
+    z-index: 999999;
 }
 #alerts_list .bg {
+    top: 0;
+    left: 0;
     background: #929397;
     opacity: 0.3;
+    height: 110px;
+}
+#alerts_list .heading {
+    top: 0;
+    left: 0;
+    height: 20px;
+    z-index: 2;
 }
 #alerts_list ul {
+    height: 90px;
+    top: 20px;
+    left: 0;
     list-style: none;
     padding: 0;
     margin: 0;
     z-index: 2;
 }
+#alerts_list span {
+    display: block;
+    float: left;
+    padding: 0 5px;
+}
+#alerts_list span.time {
+    width: 40px;
+}
+#alerts_list span.title {
+    width: 490px;
+}
+#alerts_list span.device {
+    width: 240px;
+}
 #alerts_list ul li {
-    padding: 3px 10px;
-    margin: 0 10px;
+    padding: 3px 0;
+    margin: 0;
     color: #929397;
     white-space: nowrap;
     overflow: hidden;
