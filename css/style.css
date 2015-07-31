@@ -196,9 +196,6 @@ body {
     #alerts_list span.title {
         width: 290px;
     }
-    #alerts_list, #alerts_list > .inner, #alerts_list .bg {
-        height: 100px;
-    }
     #alerts_list span.device {
         width: 80px;
     }
