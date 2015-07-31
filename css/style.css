@@ -27,8 +27,8 @@ body {
     height: 85px;
     position: absolute;
     z-index: 999;
-    top: 55px;
-    left: 10px;
+    top: 7%;
+    left: 1%;
 }
 #logo img {
     width: 100%;
@@ -77,8 +77,8 @@ body {
     width: 700px;
 }
 #alerts_list {
-    left: 285px;
-    bottom: 100px;
+    left: 20%;
+    bottom: 15%;
     position: absolute;
     width: 700px;
     height: 110px;
@@ -143,9 +143,11 @@ body {
 
 .map_container .copyright {
     position: absolute;
-    right: 20px;
-    bottom: 100px;
-    color: #00a4f2;
+    right: 2%;
+    bottom: 15%;
     font-size: 16px;
     font-weight: bold;
+}
+.map_container .copyright a {
+    color: #00a4f2;
 }
