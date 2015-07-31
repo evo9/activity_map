@@ -548,10 +548,6 @@
             .attr("r", 0)
             .remove();
 
-        function datumHasCoords(datum) {
-            return typeof datum !== 'undefined' && typeof datum.latitude !== 'undefined' && typeof datum.longitude !== 'undefined';
-        }
-
     }
 
     function scrollToActive() {
@@ -563,6 +559,10 @@
             offset = offset * (-1)
             $('#alerts_list .mCSB_container').animate({ top: offset }, 300);
         }
+    }
+
+    function datumHasCoords(datum) {
+        return typeof datum !== 'undefined' && typeof datum.latitude !== 'undefined' && typeof datum.longitude !== 'undefined';
     }
 
     //stolen from underscore.js
@@ -687,10 +687,6 @@
                 return JSON.stringify(d);
             });
 
-        function datumHasCoords(datum) {
-            return typeof datum !== 'undefined' && typeof datum.latitude !== 'undefined' && typeof datum.longitude !== 'undefined';
-        }
-
         this.alertsList(data, null);
 
         $('body').on('click', '#alerts_list ul li', function() {
@@ -780,7 +776,27 @@
                 newsize = options.element.clientWidth,
                 oldsize = d3.select(options.element).select('svg').attr('data-width');
 
-            d3.select(options.element).select('svg').selectAll('g').style(prefix + 'transform', 'scale(' + (newsize / oldsize) + ')');
+            d3.select(options.element).select('svg').select('g.datamaps-subunits').style(prefix + 'transform', 'scale(' + (newsize / oldsize) + ')');
+
+            var pathAndProjection = options.setProjection.apply(self, [options.element, options]);
+
+            this.path = pathAndProjection.path;
+            this.projection = pathAndProjection.projection;
+            
+            d3.select(options.element).select('svg').selectAll('.pin')
+                .attr('transform', function (d) {
+                    var latLng;
+                    if (datumHasCoords(d)) {
+                        latLng = self.latLngToXY(d.latitude, d.longitude);
+                    }
+                    else if (d.centered) {
+                        latLng = self.path.centroid(svg.select('path.' + d.centered).data()[0]);
+                    }
+                    if (latLng) {
+                        return 'translate(' + (latLng[0] - 10) + ', ' + (latLng[1] - 30) + ')';
+                    }
+                });
+
         }
     }
 
@@ -12667,10 +12683,6 @@
                 })
                 .style('left', (latLng[0] + 5) + "px")
                 .style('display', 'block');
-        }
-
-        function datumHasCoords(datum) {
-            return typeof datum !== 'undefined' && typeof datum.latitude !== 'undefined' && typeof datum.longitude !== 'undefined';
         }
     };
 
