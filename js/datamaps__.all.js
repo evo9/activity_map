@@ -782,7 +782,7 @@
 
             this.path = pathAndProjection.path;
             this.projection = pathAndProjection.projection;
-            
+
             d3.select(options.element).select('svg').selectAll('.pin')
                 .attr('transform', function (d) {
                     var latLng;
@@ -796,6 +796,9 @@
                         return 'translate(' + (latLng[0] - 10) + ', ' + (latLng[1] - 30) + ')';
                     }
                 });
+
+            var pin = d3.select(options.element).select('svg').select('.pin.active');
+            self.updateTooltip(pin);
 
         }
     }
