@@ -72,16 +72,20 @@ body {
     display: none;
 }
 
-#alerts_list, #alerts_list .bg,
+#alerts_list, #alerts_list > .inner, #alerts_list .bg,
 #alerts_list ul, #alerts_list .heading {
     position: absolute;
     width: 700px;
 }
 #alerts_list {
-    left: 20%;
+    left: 50%;
     bottom: 15%;
-    position: absolute;
     height: 110px;
+}
+#alerts_list > .inner {
+    height: 110px;
+    top: 0;
+    left: -50%;
     border: 1px solid #00a4f2;
     -webkit-box-shadow: 0 0 5px #00a4f2;
     -moz-box-shadow: 0 0 5px #00a4f2;
@@ -155,7 +159,7 @@ body {
     #logo {
         width: 250px;
     }
-    #alerts_list, #alerts_list .bg,
+    #alerts_list, #alerts_list > .inner, #alerts_list .bg,
     #alerts_list ul, #alerts_list .heading {
         width: 550px;
     }
@@ -179,7 +183,7 @@ body {
     #logo {
         width: 200px;
     }
-    #alerts_list, #alerts_list .bg,
+    #alerts_list, #alerts_list > .inner, #alerts_list .bg,
     #alerts_list ul, #alerts_list .heading {
         width: 450px;
     }
@@ -191,6 +195,9 @@ body {
     }
     #alerts_list span.title {
         width: 290px;
+    }
+    #alerts_list, #alerts_list > .inner, #alerts_list .bg {
+        height: 100px;
     }
     #alerts_list span.device {
         width: 80px;
@@ -206,18 +213,18 @@ body {
     #map {
         margin: -35px 0 0;
     }
-}
-@media screen and (max-width: 810px) {
-    #alerts_list {
-        left: 15%;
-    }
     .copyright a {
         font-size: 14px;
+    }
+}
+@media screen and (max-width: 810px) {
+    .copyright a {
+        font-size: 13px;
     }
     #map {
         margin: -30px 0 0;
     }
-    #alerts_list, #alerts_list .bg {
+    #alerts_list, #alerts_list > .inner, #alerts_list .bg {
         height: 90px;
     }
     #alerts_list .heading {
@@ -239,7 +246,7 @@ body {
     #map {
         margin: -25px 0 0;
     }
-    #alerts_list, #alerts_list .bg {
+    #alerts_list, #alerts_list > .inner, #alerts_list .bg {
         height: 70px;
     }
     #alerts_list .heading {
@@ -253,7 +260,7 @@ body {
     #map {
         margin: -35px 0 0;
     }
-    #alerts_list {
-        left: 10%;
+    .copyright a {
+        font-size: 10px;
     }
 }
