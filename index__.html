@@ -49,6 +49,10 @@
                 });
 
                 map.load();
+
+                window.addEventListener('resize', function(event){
+                    map.resize();
+                });
             });
         </script>
     </body>
